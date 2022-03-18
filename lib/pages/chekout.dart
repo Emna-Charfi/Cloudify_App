@@ -1,0 +1,563 @@
+import 'package:cloudify_application/const/colors.dart';
+import 'package:cloudify_application/model/cardmodel.dart';
+import 'package:cloudify_application/pages/customtextinput.dart';
+import 'package:cloudify_application/providers/cart.dart';
+import 'package:cloudify_application/util/helper.dart';
+import 'package:flutter/material.dart';
+
+import 'package:provider/provider.dart';
+
+class CheckoutScreen extends StatefulWidget {
+  double? price;
+  CardModel? card;
+  CheckoutScreen({Key? key, this.price, this.card}) : super(key: key);
+
+  @override
+  _CheckoutScreenState createState() => _CheckoutScreenState();
+}
+
+class _CheckoutScreenState extends State<CheckoutScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final gamePanier = Provider.of<Cart>(context);
+    return Scaffold(
+      body: Container(
+        child: Column(
+          children: [
+            SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        icon: Icon(
+                          Icons.arrow_back_ios_rounded,
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          "Checkout",
+                          style: Helper.getTheme(context).headline5,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text("Name Of Gamer"),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: Helper.getScreenWidth(context) * 0.6,
+                          child: Text(
+                            "Mohamed t ", // + widget.card!.cardNumber.toString(),
+                            style: Helper.getTheme(context).headline6,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            // Navigator.of(context)
+                            //     .pushNamed(ChangeAddressScreen.routeName);
+                          },
+                          icon: Icon(
+                            Icons.check,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text("Email of Gamer"),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: Helper.getScreenWidth(context) * 0.6,
+                          child: Text(
+                            "Mohamed@esprit.tn",
+                            style: Helper.getTheme(context).headline6,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            // Navigator.of(context)
+                            //     .pushNamed(ChangeAddressScreen.routeName);
+                          },
+                          icon: Icon(
+                            Icons.check,
+                            color: Colors.blue,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    height: 10,
+                    width: double.infinity,
+                    color: AppColor.placeholderBg,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Payment method"),
+                        TextButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                isScrollControlled: true,
+                                isDismissible: false,
+                                context: context,
+                                builder: (context) {
+                                  return Container(
+                                    height:
+                                        Helper.getScreenHeight(context) * 0.8,
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              icon: Icon(
+                                                Icons.clear,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20.0),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "Add Credit/Debit Card",
+                                                style: Helper.getTheme(context)
+                                                    .headline6,
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20.0),
+                                          child: Divider(
+                                            color: AppColor.placeholder
+                                                .withOpacity(0.5),
+                                            thickness: 1.5,
+                                            height: 40,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20.0),
+                                          child: CustomTextInput(
+                                              hintText: "card Number"),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text("Expiry"),
+                                              SizedBox(
+                                                height: 50,
+                                                width: 100,
+                                                child: CustomTextInput(
+                                                  hintText: "MM",
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 35),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 50,
+                                                width: 100,
+                                                child: CustomTextInput(
+                                                  hintText: "YY",
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20.0),
+                                          child: CustomTextInput(
+                                              hintText: "Security Code"),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20.0),
+                                          child: CustomTextInput(
+                                              hintText: "First Name"),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20.0),
+                                          child: CustomTextInput(
+                                              hintText: "Last Name"),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              SizedBox(
+                                                width: Helper.getScreenWidth(
+                                                        context) *
+                                                    0.4,
+                                                child: Text(
+                                                    "You can remove this card at anytime"),
+                                              ),
+                                              Switch(
+                                                value: false,
+                                                onChanged: (_) {},
+                                                thumbColor:
+                                                    MaterialStateProperty.all(
+                                                  AppColor.secondary,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 30,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20.0),
+                                          child: SizedBox(
+                                            height: 50,
+                                            child: ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.add,
+                                                    ),
+                                                    SizedBox(width: 40),
+                                                    Text("Add Card"),
+                                                    SizedBox(width: 40),
+                                                  ],
+                                                )),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                });
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.add),
+                              Text(
+                                "Add Card",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  PaymentCard(
+                    widget: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 40,
+                              child: Image.asset("assets/images/visa2.png"),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            //Text("**** **** **** 2187"),
+                            Text(widget.card!.cardNumber.toString()),
+                          ],
+                        ),
+                        Container(
+                          width: 15,
+                          height: 15,
+                          decoration: ShapeDecoration(
+                            shape: CircleBorder(
+                              side: BorderSide(color: AppColor.orange),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    height: 10,
+                    width: double.infinity,
+                    color: AppColor.placeholderBg,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Sub Total"),
+                            Text(
+                              "\$" + widget.price.toString(),
+                              style: Helper.getTheme(context).headline5,
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Divider(
+                          height: 40,
+                          color: AppColor.placeholder.withOpacity(0.25),
+                          thickness: 2,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Total"),
+                            Text(
+                              "\$" + widget.price.toString(),
+                              style: Helper.getTheme(context).headline5,
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: 10,
+                    width: double.infinity,
+                    color: AppColor.placeholderBg,
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: SizedBox(
+                      height: 50,
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          gamePanier.clear();
+                          showModalBottomSheet(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              isScrollControlled: true,
+                              isDismissible: false,
+                              context: context,
+                              builder: (context) {
+                                return Container(
+                                  height: Helper.getScreenHeight(context) * 0.8,
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            icon: Icon(Icons.clear),
+                                          ),
+                                        ],
+                                      ),
+                                      Image.asset(
+                                        Helper.getAssetName(
+                                          "vector4.png",
+                                          "virtual",
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        "Thank You!",
+                                        style: TextStyle(
+                                          color: AppColor.primary,
+                                          fontWeight: FontWeight.w900,
+                                          fontSize: 30,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        "for your order",
+                                        style: Helper.getTheme(context)
+                                            .headline4!
+                                            .copyWith(color: AppColor.primary),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20.0),
+                                        child: Text(
+                                            "Your order is now being processed. We will let you know once the order is picked from the outlet. Check the status of your order"),
+                                      ),
+                                      SizedBox(
+                                        height: 60,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                        ),
+                                        child: SizedBox(
+                                          height: 50,
+                                          width: double.infinity,
+                                          child: ElevatedButton(
+                                            onPressed: () {},
+                                            child: Text("Track My Order"),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                        ),
+                                        child: TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pushNamed("/home");
+                                          },
+                                          child: Text(
+                                            "Back To Home",
+                                            style: TextStyle(
+                                              color: AppColor.primary,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              });
+                        },
+                        child: Text("Send Order"),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            // Positioned(
+            //   bottom: 0,
+            //   left: 0,
+            //   child: CustomNavBar(),
+            // ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PaymentCard extends StatelessWidget {
+  const PaymentCard({
+    Key? key,
+    required Widget widget,
+  })  : _widget = widget,
+        super(key: key);
+
+  final Widget _widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+          height: 50,
+          width: double.infinity,
+          padding: const EdgeInsets.only(
+            left: 30,
+            right: 20,
+          ),
+          decoration: ShapeDecoration(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: BorderSide(
+                color: AppColor.placeholder.withOpacity(0.25),
+              ),
+            ),
+            color: AppColor.placeholderBg,
+          ),
+          child: _widget),
+    );
+  }
+}
