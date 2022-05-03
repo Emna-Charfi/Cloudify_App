@@ -1,12 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 class GameModels with ChangeNotifier {
   final String id;
-  final String image;
+  String image;
   final String title;
   final String description;
-  final double price;
+  final int price;
   bool isFavorite = false;
+  static List<String> images = [];
 
   GameModels(
     this.id,
@@ -15,6 +17,16 @@ class GameModels with ChangeNotifier {
     this.description,
     this.price,
   );
+
+  void setImages(List<String> img) {
+    if (images.isEmpty) {
+      images.addAll(img);
+    }
+  }
+
+  List<String> get gameImages {
+    return [...images];
+  }
 
   void toggleFavoriteStatus() {
     isFavorite = !isFavorite;

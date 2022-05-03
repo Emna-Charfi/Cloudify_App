@@ -1,5 +1,8 @@
 import 'package:cloudify_application/providers/cart.dart';
 import 'package:cloudify_application/providers/games.dart';
+import 'package:cloudify_application/providers/list_games.dart';
+import 'package:cloudify_application/widgets/badge.dart';
+import 'package:cloudify_application/widgets/drawer/drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:cloudify_application/model/game_model.dart';
 
@@ -7,8 +10,8 @@ import 'package:cloudify_application/util/game_utils.dart';
 import 'package:flutter/material.dart';
 
 class selectedGamepage extends StatefulWidget {
-  final int? index;
-  const selectedGamepage({Key? key, this.index}) : super(key: key);
+  GameModels? index;
+  selectedGamepage({Key? key, this.index}) : super(key: key);
 
   @override
   _selectedGamepageState createState() => _selectedGamepageState();
@@ -31,100 +34,54 @@ class _selectedGamepageState extends State<selectedGamepage> {
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-    List<GameModels> games = GameUtils.getMockedGames();
+    //List<GameModels> games = GameUtils.getMockedGames();
+    // List<GameModels> games =
+    //     Provider.of<GamesList>(context, listen: false).itemsList;
     return Scaffold(
       backgroundColor: const Color(0xFF232D3B),
-      // backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("CLOUDIFY "),
-        // backgroundColor: const Color(0xFF232D3B),
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color(0xFF232D3B),
         elevation: 4.0,
         actions: [
-          IconButton(
-            onPressed: () => {
-              //SharedPreferences prefs = await SharedPreferences.getInstance();
-              // await prefs.clear();
-              Navigator.pushReplacementNamed(context, "/signin"),
-            },
-            icon: Icon(
-              Icons.logout,
-              size: 30,
-              color: Colors.green,
+          //Spacer(),
+          Consumer<Cart>(
+            builder: (_, cart, ch) => Badge(
+              child: ch,
+              color: Color(0xFFF17532),
+              value: cart.itemCount.toString(),
             ),
-          )
+            child: IconButton(
+              icon: Icon(
+                Icons.shopping_cart,
+                color: Colors.white,
+                size: 25,
+              ),
+              onPressed: () {
+                // setState(() {
+                //   _currentIndex = 3;
+                // });
+                Navigator.of(context).pushNamed("/home/panier");
+              },
+            ),
+          ),
         ],
       ),
-      drawer: Drawer(
-        child: Column(
-          children: [
-            AppBar(
-              automaticallyImplyLeading: false,
-              title: const Text("CLOUDIFY"),
-              backgroundColor: const Color(0xFF232D3B), //584C3B
-            ),
-            ListTile(
-              title: Row(
-                children: const [
-                  Icon(Icons.edit),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text("Modifier profil")
-                ],
-              ),
-              onTap: () {
-                Navigator.pushNamed(context, "/home/updateUser");
-              },
-            ),
-            ListTile(
-              title: Row(
-                children: const [
-                  Icon(Icons.vertical_align_bottom),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text("Navigation du bas")
-                ],
-              ),
-              onTap: () {
-                Navigator.pushNamed(context, "/home");
-              },
-            ),
-            ListTile(
-              title: Row(
-                children: const [
-                  Icon(Icons.power_off_rounded),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text("Disconnect")
-                ],
-              ),
-              onTap: () async {
-                //SharedPreferences prefs = await SharedPreferences.getInstance();
-                // await prefs.clear();
-                Navigator.pushReplacementNamed(context, "/signin");
-              },
-            )
-          ],
-        ),
-      ),
+      drawer: DrawerS(),
       body: SingleChildScrollView(
         child: Column(
           children: [
             //   SizedBox(height: 1),
-            picture(games[widget.index!].image),
+            picture(widget.index!.image),
 
             subTitleSection(
                 context,
-                games[widget.index!],
-                games[widget.index!].price,
-                games[widget.index!].title,
-                games[widget.index!].description,
-                games[widget.index!].id,
-                games[widget.index!].image),
-            DescriptionSection(games[widget.index!].description),
+                widget.index!.price,
+                widget.index!.title,
+                widget.index!.description,
+                widget.index!.id,
+                widget.index!.image),
+            DescriptionSection(widget.index!.description),
             //bottunTry(context),
             moreAboutSection,
             lineSection,
@@ -149,6 +106,7 @@ Widget picture(String image) => GestureDetector(
                 child: ClipRRect(
                   // borderRadius: BorderRadius.circular(20),
                   child: Image.asset(image, fit: BoxFit.cover),
+                  //child: Image.network(image, fit: BoxFit.cover),
                 ),
               ),
               Positioned(
@@ -171,8 +129,8 @@ Widget picture(String image) => GestureDetector(
           )),
     );
 
-Widget subTitleSection(BuildContext context, GameModels games, double price,
-    String title, String desc, String id, String image) {
+Widget subTitleSection(BuildContext context, int price, String title,
+    String desc, String id, String image) {
   final cart = Provider.of<Cart>(context);
   final game = Provider.of<Games>(context);
   return Container(
@@ -228,27 +186,6 @@ Widget subTitleSection(BuildContext context, GameModels games, double price,
             color: game.findByIdFav(id) ? Colors.orange : Colors.white,
           ),
           onTap: () async {
-            // print("Heloo");
-            // final note = Panier(
-            //   id: 0,
-            //   idGame: id,
-            //   prix: price,
-            // );
-            // var database = await PanierDatabase.instance.database;
-            // await database.insert("paniers", note.toJson(),
-            //     conflictAlgorithm: ConflictAlgorithm.replace);
-
-            // print(id);
-
-            // showDialog(
-            //   context: context,
-            //   builder: (BuildContext context) {
-            //     return AlertDialog(
-            //       title: const Text("Informations"),
-            //       content: Text(id),
-            //     );
-            //   },
-            // );
             game.toggleFavoriteStatus(id);
 
             if (game.findByIdFav(id)) {
@@ -262,6 +199,18 @@ Widget subTitleSection(BuildContext context, GameModels games, double price,
                   );
                 },
               );
+              // Scaffold.of(context).showSnackBar(SnackBar(
+              //   content: Text(
+              //     "Your Game Add't to Shop",
+              //   ),
+              //   duration: Duration(seconds: 2),
+              //   action: SnackBarAction(
+              //     label: "UNDO",
+              //     onPressed: () {
+              //       //to do
+              //     },
+              //   ),
+              // ));
             } else {
               cart.removeItem(id);
               showDialog(

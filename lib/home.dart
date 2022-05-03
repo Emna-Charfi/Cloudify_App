@@ -10,6 +10,9 @@ import 'package:flutter/material.dart';
 
 import 'package:cloudify_application/providers/cart.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+String _username = '';
 
 class Home extends StatefulWidget {
   const Home({
@@ -36,8 +39,20 @@ class _HomeState extends State<Home> {
     Store(),
     Game(),
     Panier(),
-    ProfilePage(),
+    //ProfilePage(),
   ];
+  @override
+  void initState() {
+    super.initState();
+    _loadCounter();
+  }
+
+  _loadCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _username = (prefs.getString('username') ?? '');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,41 +64,30 @@ class _HomeState extends State<Home> {
           backgroundColor: const Color(0xFF232D3B),
           elevation: 4.0,
           actions: [
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                textStyle: MaterialStateProperty.all(
-                  const TextStyle(fontSize: 15),
-                ),
-                overlayColor: MaterialStateProperty.all(Colors.green),
-                // padding: MaterialStateProperty.all(const EdgeInsets.all(15)),
-                // minimumSize: MaterialStateProperty.all(const Size(2, 2)),
-                fixedSize: MaterialStateProperty.all(const Size(110, 20)),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                ),
+            //Spacer(),
+            Consumer<Cart>(
+              builder: (_, cart, ch) => Badge(
+                child: ch,
+                color: Color(0xFFF17532),
+                value: cart.itemCount.toString(),
               ),
-              child: const Text("Connexion"),
-              onPressed: () {
-                Navigator.pushNamed(context, "/signin");
-              },
+              child: IconButton(
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: Colors.white,
+                  size: 25,
+                ),
+                onPressed: () {
+                  // setState(() {
+                  //   _currentIndex = 3;
+                  // });
+                  Navigator.of(context).pushNamed("/home/panier");
+                },
+              ),
             ),
-            IconButton(
-              onPressed: () => {
-                //SharedPreferences prefs = await SharedPreferences.getInstance();
-                // await prefs.clear();
-                Navigator.pushReplacementNamed(context, "/signin"),
-              },
-              icon: Icon(
-                Icons.logout,
-                size: 30,
-                color: Colors.green,
-              ),
-            )
           ],
         ),
+
         drawer: DrawerS(),
         // body: const TabBarView(
         //   children: [Store(), Store(), Game(), Panier()],
@@ -125,16 +129,16 @@ class _HomeState extends State<Home> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
-                              IconButton(
-                                tooltip: 'Profil',
-                                color: Colors.black,
-                                icon: const Icon(Icons.person_outline),
-                                onPressed: () {
-                                  setState(() {
-                                    _currentIndex = 4;
-                                  });
-                                },
-                              ),
+                              // IconButton(
+                              //   tooltip: 'Profil',
+                              //   color: Colors.black,
+                              //   icon: const Icon(Icons.person_outline),
+                              //   onPressed: () {
+                              //     setState(() {
+                              //       _currentIndex = 4;
+                              //     });
+                              //   },
+                              // ),
                               //if (BottomBar.centerLocations.contains(fabLocation))
                               const Spacer(),
                               IconButton(
@@ -171,7 +175,7 @@ class _HomeState extends State<Home> {
                                 },
                               ),
                               // if (centerLocations.contains(fabLocation))
-                              const Spacer(),
+                              // const Spacer(),
 
                               // IconButton(
                               //   tooltip: 'Panier',
@@ -183,27 +187,27 @@ class _HomeState extends State<Home> {
                               //     });
                               //   },
                               // ),
-                              Consumer<Cart>(
-                                builder: (_, cart, ch) => Badge(
-                                  child: ch,
-                                  value: cart.itemCount.toString(),
-                                ),
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.shopping_cart,
-                                    color: Colors.black,
-                                    size: 25,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _currentIndex = 3;
-                                    });
-                                    // Navigator.of(context).pushNamed(CartScreen.routeName);
-                                  },
-                                ),
-                              ),
+                              // Consumer<Cart>(
+                              //   builder: (_, cart, ch) => Badge(
+                              //     child: ch,
+                              //     value: cart.itemCount.toString(),
+                              //   ),
+                              //   child: IconButton(
+                              //     icon: Icon(
+                              //       Icons.shopping_cart,
+                              //       color: Colors.black,
+                              //       size: 25,
+                              //     ),
+                              //     onPressed: () {
+                              //       setState(() {
+                              //         _currentIndex = 3;
+                              //       });
+                              //       // Navigator.of(context).pushNamed(CartScreen.routeName);
+                              //     },
+                              //   ),
+                              // ),
                               // if (centerLocations.contains(fabLocation))
-                              const Spacer(),
+                              //const Spacer(),
                             ],
                           )),
                     ]),

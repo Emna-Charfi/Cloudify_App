@@ -4,7 +4,7 @@ class CartI {
   final String? id;
   final String? title;
   final String? image;
-  final double? price;
+  final int? price;
 
   CartI({
     @required this.id,
@@ -21,12 +21,20 @@ class Cart with ChangeNotifier {
     return {..._items};
   }
 
+  Map<String, CartI> get idOfGame {
+    List<String> list1 = [];
+    _items.forEach((key, cartItem) {
+      list1.add(cartItem.id!);
+    });
+    return {..._items};
+  }
+
   int get itemCount {
     return _items.length;
   }
 
-  double get totalAmount {
-    var total = 0.0;
+  int get totalAmount {
+    var total = 0;
     _items.forEach((key, cartItem) {
       total += cartItem.price!;
     });
@@ -35,7 +43,7 @@ class Cart with ChangeNotifier {
 
   void addItem(
     String productId,
-    double price,
+    int price,
     String title,
     String image,
   ) {

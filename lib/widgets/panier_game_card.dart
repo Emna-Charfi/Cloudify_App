@@ -1,5 +1,6 @@
 import 'package:cloudify_application/model/game_model.dart';
 import 'package:cloudify_application/providers/cart.dart';
+import 'package:cloudify_application/providers/games.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +9,7 @@ class PanierGameCard extends StatelessWidget {
   final String? id;
   final String? productId;
   final String? title;
-  final double? price;
+  final int? price;
   final String? image;
   Function? onCardClick;
 
@@ -43,9 +44,38 @@ class PanierGameCard extends StatelessWidget {
           ),
         ),
         direction: DismissDirection.endToStart,
-        onDismissed: (direction) {
-          Provider.of<Cart>(context, listen: false).removeItem(productId!);
+        confirmDismiss: (direction) {
+          return showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                    title: Text("Are you sure?"),
+                    content:
+                        Text("Do you want to remove the item from the Panier?"),
+                    actions: <Widget>[
+                      FlatButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                          //Navigator.of(context).pop();
+                        },
+                        child: Text("No"),
+                      ),
+                      FlatButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                          Provider.of<Cart>(context, listen: false)
+                              .removeItem(productId!);
+                          Provider.of<Games>(context, listen: false)
+                              .toggleFavoriteStatus(productId!);
+                          Navigator.pushNamed(context, "/home/panier");
+                        },
+                        child: Text("Yes"),
+                      ),
+                    ],
+                  ));
         },
+        // onDismissed: (direction) {
+        //   Provider.of<Cart>(context, listen: false).removeItem(productId!);
+        // },
         child: SizedBox(
           // height: 150,
           // width: 200,

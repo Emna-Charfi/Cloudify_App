@@ -23,6 +23,7 @@ class GameCard extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.asset(this.game!.image, fit: BoxFit.cover),
+                  //child: Image.network(this.game!.image, fit: BoxFit.cover),
                 ),
               ),
               Positioned(

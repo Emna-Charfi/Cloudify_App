@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   static const String _title = 'Flutter ';
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

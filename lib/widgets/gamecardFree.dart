@@ -1,7 +1,7 @@
-import 'package:cloudify_application/home_page.dart';
 import 'package:cloudify_application/model/game_model.dart';
 
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FreeGameCard extends StatelessWidget {
   GameModels? game;
@@ -53,8 +53,9 @@ class FreeGameCard extends StatelessWidget {
                         child: GestureDetector(
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(20),
-                            child: Image.asset(this.game!.image,
+                            child: Image.network(this.game!.image,
                                 fit: BoxFit.cover),
+                            //Image.asset(),
                           ),
                         ),
                       ),
@@ -101,6 +102,8 @@ class FreeGameCard extends StatelessWidget {
                               IconButton(
                                 onPressed: () {
                                   // PLAY NOW
+                                  //_launchURL();
+                                  Navigator.pushNamed(context, "/webview");
                                 },
                                 icon: Icon(
                                   Icons.play_circle_fill,
@@ -119,5 +122,10 @@ class FreeGameCard extends StatelessWidget {
             ],
           )),
     );
+  }
+
+  void _launchURL() async {
+    const _url = 'https://flutter.io';
+    if (!await launch(_url)) throw 'Could not launch $_url';
   }
 }

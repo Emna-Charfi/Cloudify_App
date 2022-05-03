@@ -1,6 +1,7 @@
 import 'package:cloudify_application/model/game_model.dart';
 import 'package:cloudify_application/pages/selectedgamepage.dart';
 import 'package:cloudify_application/util/game_utils.dart';
+import 'package:cloudify_application/util/game_utils_paid.dart';
 import 'package:cloudify_application/widgets/gamecard.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,7 @@ class PaidGame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<GameModels> games = GameUtils.getMockedGames();
+    List<GameModels> games = GameUtilsPaid.getMockedGames();
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Padding(
         padding: const EdgeInsets.only(top: 10, bottom: 10),
@@ -30,7 +31,7 @@ class PaidGame extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              selectedGamepage(index: index)));
+                              selectedGamepage(index: games[index])));
                 });
           },
         ),

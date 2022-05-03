@@ -1,4 +1,16 @@
+import 'dart:convert';
+
+import 'package:cloudify_application/providers/cart.dart';
+import 'package:cloudify_application/util/api.dart';
+import 'package:cloudify_application/widgets/badge.dart';
+import 'package:cloudify_application/widgets/drawer/drawer.dart';
 import 'package:flutter/material.dart';
+
+import 'package:provider/provider.dart';
+import "package:http/http.dart" as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+String _id = "";
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({Key? key}) : super(key: key);
@@ -8,6 +20,20 @@ class ResetPassword extends StatefulWidget {
 }
 
 class _ResetPasswordState extends State<ResetPassword> {
+  @override
+  void initState() {
+    super.initState();
+    _loadCounter();
+  }
+
+  _loadCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _username = (prefs.getString('USERNAME') ?? '');
+      _id = (prefs.getString('ID') ?? '');
+    });
+  }
+
   late String? _username;
 
   final GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
@@ -19,43 +45,32 @@ class _ResetPasswordState extends State<ResetPassword> {
       appBar: AppBar(
         title: const Text("CLOUDIFY "),
         backgroundColor: const Color(0xFF232D3B),
+        //backgroundColor: Colors.transparent,
         elevation: 4.0,
         actions: [
-          // ElevatedButton(
-          //   style: ButtonStyle(
-          //     backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-          //     textStyle: MaterialStateProperty.all(
-          //       const TextStyle(fontSize: 15),
-          //     ),
-          //     overlayColor: MaterialStateProperty.all(Colors.green),
-          //     // padding: MaterialStateProperty.all(const EdgeInsets.all(15)),
-          //     // minimumSize: MaterialStateProperty.all(const Size(2, 2)),
-          //     fixedSize: MaterialStateProperty.all(const Size(110, 20)),
-          //     shape: MaterialStateProperty.all(
-          //       RoundedRectangleBorder(
-          //         borderRadius: BorderRadius.circular(100),
-          //       ),
-          //     ),
-          //   ),
-          //   child: const Text("Connexion"),
-          //   onPressed: () {
-          //     Navigator.pushNamed(context, "/signin");
-          //   },
-          // ),
-          IconButton(
-            onPressed: () => {
-              //SharedPreferences prefs = await SharedPreferences.getInstance();
-              // await prefs.clear();
-              Navigator.pushReplacementNamed(context, "/signin"),
-            },
-            icon: Icon(
-              Icons.logout,
-              size: 30,
-              color: Colors.green,
+          Consumer<Cart>(
+            builder: (_, cart, ch) => Badge(
+              child: ch,
+              color: Color(0xFFF17532),
+              value: cart.itemCount.toString(),
             ),
-          )
+            child: IconButton(
+              icon: Icon(
+                Icons.shopping_cart,
+                color: Colors.white,
+                size: 25,
+              ),
+              onPressed: () {
+                // setState(() {
+                //   _currentIndex = 3;
+                // });
+                Navigator.of(context).pushNamed("/home/panier");
+              },
+            ),
+          ),
         ],
       ),
+      drawer: DrawerS(),
       body: Form(
         key: _keyForm,
         child: ListView(
@@ -104,7 +119,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                   onPressed: () {
                     if (_keyForm.currentState!.validate()) {
                       _keyForm.currentState!.save();
-                      Navigator.pushNamed(context, "/resetP");
+                      //Navigator.pushNamed(context, "/resetP");
+                      change();
                     }
                   },
                 )),
@@ -112,5 +128,98 @@ class _ResetPasswordState extends State<ResetPassword> {
         ),
       ),
     );
+  }
+
+  void change() {
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8",
+    };
+    Map<String, dynamic> body = {
+      'username': _username,
+    };
+    http
+        .post(
+      Uri.http(api_keyM, "edit/" + _id.toString()),
+      headers: headers,
+      body: json.encode(body),
+    )
+        .then((http.Response response) async {
+      // try {
+      //   showDialog(
+      //       context: context,
+      //       builder: (BuildContext context) {
+      //         return const AlertDialog(
+      //           title: Text("Response"),
+      //           content: Text(response.statusCode.toString()),
+      //         );
+      //       });
+      // } catch (erreur) {}
+
+      if (response.statusCode == 200) {
+        //Map<String, dynamic> userData = jsonDecode(response.body);
+
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Information"),
+                content: Row(
+                  children: [
+                    Text("Your username is changed !"),
+                    Spacer(),
+                    // IconButton(
+                    //     onPressed: () {},
+                    //     icon: Icon(
+                    //       Icons.email,
+                    //       color: Colors.green,
+                    //     ))
+                  ],
+                ),
+              );
+            });
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString("USERNAME", _username!);
+
+        Navigator.pushReplacementNamed(context, "/home/profil");
+        // print("success");
+      } else if (response.statusCode == 401) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const AlertDialog(
+                title: Text("Information"),
+                content: Text("Password is incorrect"),
+              );
+            });
+      } else if (response.statusCode == 402) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const AlertDialog(
+                title: Text("Information"),
+                content: Text("Email doesn't exist"),
+              );
+            });
+      } else if (response.statusCode == 400) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const AlertDialog(
+                title: Text("Information"),
+                content: Text("Bad Request 400 "),
+              );
+            });
+      } else {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const AlertDialog(
+                title: Text("Information"),
+                content:
+                    Text("Une erreur s'est produite. Veuillez réessayer !"),
+              );
+            });
+      }
+    });
   }
 }

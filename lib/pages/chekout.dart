@@ -2,10 +2,15 @@ import 'package:cloudify_application/const/colors.dart';
 import 'package:cloudify_application/model/cardmodel.dart';
 import 'package:cloudify_application/pages/customtextinput.dart';
 import 'package:cloudify_application/providers/cart.dart';
+import 'package:cloudify_application/providers/games.dart';
 import 'package:cloudify_application/util/helper.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+String _username = "";
+String _email = "";
 
 class CheckoutScreen extends StatefulWidget {
   double? price;
@@ -18,8 +23,23 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
+  void initState() {
+    super.initState();
+    _loadCounter();
+  }
+
+  _loadCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _username = (prefs.getString('USERNAME') ?? '');
+      _email = (prefs.getString('EMAIL') ?? '');
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final gamePanier = Provider.of<Cart>(context);
+    final fav = Provider.of<Games>(context);
     return Scaffold(
       body: Container(
         child: Column(
@@ -61,7 +81,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         SizedBox(
                           width: Helper.getScreenWidth(context) * 0.6,
                           child: Text(
-                            "Mohamed t ", // + widget.card!.cardNumber.toString(),
+                            _username, // + widget.card!.cardNumber.toString(),
                             style: Helper.getTheme(context).headline6,
                           ),
                         ),
@@ -93,7 +113,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         SizedBox(
                           width: Helper.getScreenWidth(context) * 0.6,
                           child: Text(
-                            "Mohamed@esprit.tn",
+                            _email,
                             style: Helper.getTheme(context).headline6,
                           ),
                         ),
@@ -411,6 +431,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           gamePanier.clear();
+                          //fav.freeItem;
                           showModalBottomSheet(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),

@@ -210,7 +210,7 @@ Widget picture(String image) => GestureDetector(
     );
 
 Widget subTitleSection(
-    BuildContext context, double price, String title, String desc, String id) {
+    BuildContext context, int price, String title, String desc, String id) {
   return Container(
     // color: Colors.grey.shade200,
     height: 50,
@@ -313,7 +313,7 @@ Widget subTitleSection(
             final note = Panier(
               id: 0,
               idGame: id,
-              prix: price,
+              prix: price as double,
             );
             var database = await PanierDatabase.instance.database;
             await database.insert("paniers", note.toJson(),

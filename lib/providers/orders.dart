@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 
 class OrderItem {
   final String? id;
-  final double? amount;
+  final int? amount;
   final List<CartI>? games;
   final DateTime? dateTime;
 
@@ -22,7 +22,7 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
-  void addOrder(List<CartI> cartProducts, double total) {
+  void addOrder(List<CartI> cartProducts, int total) {
     if (_orders.isEmpty) {
       _orders.insert(
         0,
