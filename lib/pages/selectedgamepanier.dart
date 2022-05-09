@@ -4,6 +4,7 @@ import 'package:cloudify_application/providers/cart.dart';
 import 'package:cloudify_application/util/game_utils_free.dart';
 import 'package:cloudify_application/widgets/badge.dart';
 import 'package:cloudify_application/widgets/drawer/drawer.dart';
+import 'package:cloudify_application/widgets/web_view.dart';
 //import 'package:cloudify_application/widgets/web_view.dart';
 //import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +75,7 @@ class _selectedGamePanierState extends State<selectedGamePanier> {
                 games[widget.index!].description,
                 games[widget.index!].id),
             DescriptionSection(games[widget.index!].description),
-            bottunTry(context),
+            bottunTry(context, games[widget.index!].link),
             moreAboutSection,
             lineSection,
             //boxSectionText,
@@ -167,7 +168,7 @@ Widget DescriptionSection(String desc) {
   );
 }
 
-Widget bottunTry(BuildContext context) {
+Widget bottunTry(BuildContext context, String link) {
   return Container(
     margin: EdgeInsets.all(10),
     child: Row(
@@ -175,22 +176,24 @@ Widget bottunTry(BuildContext context) {
       children: [
         Container(
           // margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-          height: 30,
-          width: 290,
+          height: 40,
+          width: 360,
           child: ElevatedButton(
             child: const Text("Play Now !"),
             style: ElevatedButton.styleFrom(
-              primary: Colors.redAccent.shade700, // background
+              primary: Colors.deepOrangeAccent, // background
 
               onPrimary: Colors.white, // foreground
               //shape: StadiumBorder(),
               // side: BorderSide(width: 2, color: Colors.red),
             ),
             onPressed: () {
-              Navigator.pushNamed(context, "/webview");
-              //Play Npw
-              // _launchURL();
-              // return web();
+              print("Le port of web view" + link);
+              // Navigator.pushNamed(context, "/webview");
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => WebViewD(link: link)));
             },
           ),
         ),
@@ -284,6 +287,13 @@ Widget iconPicture(List<String> games) {
       ),
     );
   } else {
+    print("***************************************");
+    print("the first Game********************" + games[0].toString());
+    print("the first Game********************" + games[1].toString());
+    print("the first Game********************" + games[2].toString());
+    print("the first Game********************" + games[3].toString());
+    print("***************************************");
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(5),
       scrollDirection: Axis.horizontal,
@@ -318,7 +328,7 @@ Widget iconPicture(List<String> games) {
                       borderRadius: BorderRadius.circular(15),
                       image: DecorationImage(
                         image: NetworkImage(
-                          games[0],
+                          games[0].toString(),
                         ),
 
                         // colorFilter: null,
@@ -335,6 +345,7 @@ Widget iconPicture(List<String> games) {
                     ),
                   ),
                 ),
+
                 // Text('New')
               ],
             ),
@@ -367,7 +378,7 @@ Widget iconPicture(List<String> games) {
                       borderRadius: BorderRadius.circular(15),
                       image: DecorationImage(
                         image: NetworkImage(
-                          games[1],
+                          games[1].toString(),
                         ),
                         // colorFilter: null,
                         fit: BoxFit.cover,
@@ -406,7 +417,7 @@ Widget iconPicture(List<String> games) {
                       borderRadius: BorderRadius.circular(15),
                       image: DecorationImage(
                         image: NetworkImage(
-                          games[0],
+                          games[2].toString(),
                         ),
                         // colorFilter: null,
                         fit: BoxFit.cover,
@@ -445,7 +456,7 @@ Widget iconPicture(List<String> games) {
                       borderRadius: BorderRadius.circular(15),
                       image: DecorationImage(
                         image: NetworkImage(
-                          games[1],
+                          games[3].toString(),
                         ),
                         // colorFilter: null,
                         fit: BoxFit.cover,

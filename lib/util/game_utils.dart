@@ -13,7 +13,10 @@ class GameUtils {
 
   static late Future<bool> fetchedGames;
   static Future<bool> fetchGames() async {
-    getId();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _id = (prefs.getString('ID') ?? '');
+    print("id get id*****" + (prefs.getString('ID') ?? ''));
+    //getId();
     print("id**1***" + _id.toString());
     //final response = await http.get(Uri.http(api_keyM, "/games"));
     final response =
@@ -22,35 +25,38 @@ class GameUtils {
     if (response.statusCode == 200) {
       print("**********Status 200***********");
       var jsonD = jsonDecode(response.body);
-      print("json**********" + jsonD);
-      if (jsonD != []) {
-        List<dynamic> gamesFromServer =
-            (jsonD as Map<String, dynamic>)['games'];
-        // final extractedData =
-        //     json.decode(response.body) as Map<String, dynamic>;
-        // if (extractedData == null) {
-        //   return;
-        // }
-        final List<GameModels> loadedProducts = [];
-        for (var i = 0; i < gamesFromServer.length; i++) {
-          loadedProducts.add(GameModels(
-            gamesFromServer[i]['_id'],
-            //gamesFromServer[i]['images']['url'],
+      //print("json**********" + jsonD);
+      // if (jsonD != []) {
+      //   List<dynamic> gamesFromServer =
+      //     (jsonD as Map<String, dynamic>)['games'];
 
-            "assets/images/Cyberpunk2077.jpg",
-            gamesFromServer[i]["name"],
-            gamesFromServer[i]['description'],
-            gamesFromServer[i]['price'],
-            //123.44,
-          ));
-          print("list of game*****" + gamesFromServer[i]['images'].toString());
-          // gamesFromServer[i]['images'].forEach((prodId, prodData) {
-          //   GameModels.images.add(prodData[i]['url']);
-          // });
-        }
-        ;
-        _games = loadedProducts;
-      } else {}
+      List<dynamic> gamesFromServer = jsonD;
+      // final extractedData =
+      //     json.decode(response.body) as Map<String, dynamic>;
+      // if (extractedData == null) {
+      //   return;
+      // }
+      final List<GameModels> loadedProducts = [];
+      for (var i = 0; i < gamesFromServer.length; i++) {
+        loadedProducts.add(GameModels(
+          gamesFromServer[i]['_id'],
+          //gamesFromServer[i]['images']['url'],
+
+          gamesFromServer[i]['images'][0]['url'],
+          gamesFromServer[i]["name"],
+          gamesFromServer[i]['description'],
+          gamesFromServer[i]['price'],
+          gamesFromServer[i]['link'],
+          //123.44,
+        ));
+        print("list of game*****" + gamesFromServer[i]['images'].toString());
+        // gamesFromServer[i]['images'].forEach((prodId, prodData) {
+        //   GameModels.images.add(prodData[i]['url']);
+        // });
+      }
+      ;
+      _games = loadedProducts;
+      //} else {}
 
       //notifyListeners();
     } else if (response.statusCode == 402) {
@@ -133,6 +139,6 @@ class GameUtils {
   static getId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _id = (prefs.getString('ID') ?? '');
-    //print("id get id*****" + (prefs.getString('ID') ?? ''));
+    print("id get id*****" + (prefs.getString('ID') ?? ''));
   }
 }

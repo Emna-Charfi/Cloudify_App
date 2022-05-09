@@ -19,7 +19,8 @@ class _StoreState extends State<Store> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(50.0),
             child: AppBar(
-              backgroundColor: Colors.white,
+              backgroundColor:
+                  const Color(0xFF232D3B), //Color.fromARGB(255, 232, 120, 89),
               bottom: const TabBar(
                 tabs: [
                   Tab(
@@ -29,7 +30,7 @@ class _StoreState extends State<Store> {
                     // ),
                     //text: ("Store"),
                     child: Text("Free Game",
-                        style: TextStyle(color: Colors.green)),
+                        style: TextStyle(color: Colors.orange)),
                   ),
                   Tab(
                     // icon: Icon(
@@ -37,7 +38,7 @@ class _StoreState extends State<Store> {
                     //   color: Colors.green,
                     // ),
                     child: Text("Paid Game",
-                        style: TextStyle(color: Colors.green)),
+                        style: TextStyle(color: Colors.orange)),
                   )
                 ],
               ),

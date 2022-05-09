@@ -26,7 +26,7 @@ class GameUtilsFree {
       // }
       final List<GameModels> loadedProducts = [];
       for (var i = 0; i < gamesFromServer.length; i++) {
-        loadedProducts.add(GameModels(
+        var gamess = GameModels(
           gamesFromServer[i]['_id'],
           gamesFromServer[i]['images'][0]['url'],
 
@@ -34,16 +34,26 @@ class GameUtilsFree {
           gamesFromServer[i]["name"],
           gamesFromServer[i]['description'],
           gamesFromServer[i]['price'],
+          gamesFromServer[i]['link'],
           //123.44,
-        ));
-        print("list of game*****" +
-            gamesFromServer[i]['images'][0]['url'].toString());
+        );
+        // print("list of game*****" + gamesFromServer[i]['images'].toString());
+        // for (var j = 0; j < 3; j++) {
+        //   gamess.gameImages.add(gamesFromServer[i]['images'][j]['url']);
+        //   print("game : " +
+        //       i.toString() +
+        //       " le picture" +
+        //       gamesFromServer[i]['images'][j]['url'].toString());
+        // }
+
+        loadedProducts.add(gamess);
+
         // gamesFromServer[i]['images'].forEach((prodId, prodData) {
         //   GameModels.images.add(prodData[i]['url']);
         // });
       }
 
-      ;
+      print("length of list" + loadedProducts.length.toString());
       _games = loadedProducts;
       final List<String> listImg = [];
       for (var i = 0; i < _games.length; i++) {
@@ -58,7 +68,7 @@ class GameUtilsFree {
         _games[i].setImages(listImg);
       }
       //} else {}
-      // fetchImageGames();
+      //fetchImageGames();
 
       //notifyListeners();
     } else if (response.statusCode == 402) {

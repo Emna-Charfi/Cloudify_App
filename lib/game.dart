@@ -26,29 +26,32 @@ class _GameState extends State<Game> {
     //CategorySelectionService catSelection = Provider.of<CategorySelectionService>(context, listen: false);
     //CategoryService catService = Provider.of<CategoryService>(context, listen: false);
     List<GameModels> games = GameUtils.getMockedGames();
-    return RefreshIndicator(
-      onRefresh: () => _refreshProducts(context),
-      child: Padding(
-        padding: EdgeInsets.all(8),
-        child: ListView.builder(
-          itemCount: games.length,
-          itemBuilder: (_, i) => Column(
-            children: [
-              GamePlayCard(
-                  game: games[i],
-                  onCardClick: () {
-                    // print("this game here" + games[i].toString());
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => selectedGamepage(
-                    //               index: games[i],
-                    //             )));
+    return Scaffold(
+      backgroundColor: const Color(0xFF232D3B),
+      body: RefreshIndicator(
+        onRefresh: () => _refreshProducts(context),
+        child: Padding(
+          padding: EdgeInsets.all(8),
+          child: ListView.builder(
+            itemCount: games.length,
+            itemBuilder: (_, i) => Column(
+              children: [
+                GamePlayCard(
+                    game: games[i],
+                    onCardClick: () {
+                      // print("this game here" + games[i].toString());
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => selectedGamepage(
+                      //               index: games[i],
+                      //             )));
 
-                    // _launchURL();
-                  }),
-              Divider(),
-            ],
+                      // _launchURL();
+                    }),
+                Divider(),
+              ],
+            ),
           ),
         ),
       ),

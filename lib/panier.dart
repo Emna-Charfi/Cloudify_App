@@ -2,6 +2,7 @@ import 'package:cloudify_application/pages/order_sceen.dart';
 
 import 'package:cloudify_application/providers/cart.dart';
 import 'package:cloudify_application/providers/orders.dart';
+import 'package:cloudify_application/widgets/badge.dart';
 import 'package:cloudify_application/widgets/drawer/drawer.dart';
 
 import 'package:cloudify_application/widgets/panier_game_card.dart';
@@ -49,6 +50,29 @@ class _PanierState extends State<Panier> {
               ),
             ),
             alignment: Alignment.bottomLeft),
+        actions: [
+          //Spacer(),
+          Consumer<Cart>(
+            builder: (_, cart, ch) => Badge(
+              child: ch,
+              color: Color(0xFFF17532),
+              value: cart.itemCount.toString(),
+            ),
+            child: IconButton(
+              icon: Icon(
+                Icons.shopping_cart,
+                color: Colors.white,
+                size: 25,
+              ),
+              onPressed: () {
+                // setState(() {
+                //   _currentIndex = 3;
+                // });
+                Navigator.of(context).pushNamed("/home/panier");
+              },
+            ),
+          ),
+        ],
       ),
       drawer: DrawerS(),
       body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -129,15 +153,40 @@ class _PanierState extends State<Panier> {
                     //         builder: (context) => BuyPage(
                     //               price: price,
                     //             )));
-                    Provider.of<Orders>(context, listen: false).addOrder(
-                      gamePanier.items.values.toList(),
-                      gamePanier.totalAmount,
-                    );
-                    //cart.clear();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => OrdersScreen()));
+                    if (price == 0) {
+                      showDialog(
+                          context: this.context,
+                          builder: (context) => AlertDialog(
+                                title: Text(
+                                  "Allert",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.deepOrangeAccent,
+                                    fontSize: 22.0,
+                                  ),
+                                ),
+                                content: Text(
+                                    "You have nothing to pay, your Panier is empty"),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(false);
+                                    },
+                                    child: Text("OK"),
+                                  ),
+                                ],
+                              ));
+                    } else {
+                      Provider.of<Orders>(context, listen: false).addOrder(
+                        gamePanier.items.values.toList(),
+                        price,
+                      );
+                      //cart.clear();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OrdersScreen()));
+                    }
                   },
                 ),
               ),

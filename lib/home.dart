@@ -1,6 +1,6 @@
 import 'package:cloudify_application/game.dart';
 import 'package:cloudify_application/home_page.dart';
-import 'package:cloudify_application/pages/ProfilePage.dart';
+
 import 'package:cloudify_application/panier.dart';
 import 'package:cloudify_application/store.dart';
 
@@ -143,7 +143,7 @@ class _HomeState extends State<Home> {
                               const Spacer(),
                               IconButton(
                                 tooltip: 'Sorie',
-                                color: Colors.black,
+                                color: Colors.orange,
                                 icon: const Icon(Icons.store),
                                 // disabledColor: Colors.yellow,
                                 highlightColor: Colors.yellow,
@@ -166,7 +166,7 @@ class _HomeState extends State<Home> {
                             children: <Widget>[
                               IconButton(
                                 tooltip: 'Games',
-                                color: Colors.black,
+                                color: Colors.orange,
                                 icon: const Icon(Icons.games),
                                 onPressed: () {
                                   setState(() {

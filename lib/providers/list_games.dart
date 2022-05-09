@@ -46,6 +46,7 @@ class GamesList with ChangeNotifier {
           gamesFromServer[i]["name"],
           gamesFromServer[i]['description'],
           gamesFromServer[i]['price'],
+          gamesFromServer[i]['link'],
           //123.44,
         ));
       }

@@ -1,9 +1,11 @@
 import 'package:cloudify_application/providers/cart.dart';
 import 'package:cloudify_application/providers/games.dart';
 import 'package:cloudify_application/providers/list_games.dart';
+import 'package:cloudify_application/util/game_utils_paid.dart';
 import 'package:cloudify_application/widgets/badge.dart';
 import 'package:cloudify_application/widgets/drawer/drawer.dart';
 import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import 'package:cloudify_application/model/game_model.dart';
 
 import 'package:cloudify_application/util/game_utils.dart';
@@ -34,7 +36,7 @@ class _selectedGamepageState extends State<selectedGamepage> {
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-    //List<GameModels> games = GameUtils.getMockedGames();
+    List<GameModels> games = GameUtilsPaid.getMockedGames();
     // List<GameModels> games =
     //     Provider.of<GamesList>(context, listen: false).itemsList;
     return Scaffold(
@@ -87,7 +89,7 @@ class _selectedGamepageState extends State<selectedGamepage> {
             lineSection,
             //boxSectionText,
 
-            iconPicture,
+            iconPicture(widget.index!.gameImages),
             lineSection,
             SizedBox(height: 30),
           ],
@@ -105,7 +107,7 @@ Widget picture(String image) => GestureDetector(
               Positioned.fill(
                 child: ClipRRect(
                   // borderRadius: BorderRadius.circular(20),
-                  child: Image.asset(image, fit: BoxFit.cover),
+                  child: Image.network(image),
                   //child: Image.network(image, fit: BoxFit.cover),
                 ),
               ),
@@ -131,7 +133,7 @@ Widget picture(String image) => GestureDetector(
 
 Widget subTitleSection(BuildContext context, int price, String title,
     String desc, String id, String image) {
-  final cart = Provider.of<Cart>(context);
+  final cart = Provider.of<Cart>(context, listen: true);
   final game = Provider.of<Games>(context);
   return Container(
     // color: Colors.grey.shade200,
@@ -190,15 +192,22 @@ Widget subTitleSection(BuildContext context, int price, String title,
 
             if (game.findByIdFav(id)) {
               cart.addItem(id, price, title, image);
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text("Informations"),
-                    content: Text("Your Game Add't to Shop"),
-                  );
-                },
-              );
+              print("*****the id of game il selected *******************" + id);
+              // showDialog(
+              //   context: context,
+              //   builder: (BuildContext context) {
+              //     return AlertDialog(
+              //       title: const Text("Informations"),
+              //       content: Text("Your Game Add't to Shop"),
+              //     );
+              //   },
+              // );
+              Get.snackbar('Payment', "Game Add't",
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.deepOrangeAccent,
+                  colorText: Colors.white,
+                  margin: const EdgeInsets.all(10),
+                  duration: const Duration(seconds: 2));
               // Scaffold.of(context).showSnackBar(SnackBar(
               //   content: Text(
               //     "Your Game Add't to Shop",
@@ -213,15 +222,21 @@ Widget subTitleSection(BuildContext context, int price, String title,
               // ));
             } else {
               cart.removeItem(id);
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text("Informations"),
-                    content: Text("Your Delete this Game In Shop"),
-                  );
-                },
-              );
+              // showDialog(
+              //   context: context,
+              //   builder: (BuildContext context) {
+              //     return AlertDialog(
+              //       title: const Text("Informations"),
+              //       content: Text("Your Delete this Game In Shop"),
+              //     );
+              //   },
+              // );
+              Get.snackbar('Payment', "This Game is Deleted",
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.deepOrangeAccent,
+                  colorText: Colors.white,
+                  margin: const EdgeInsets.all(10),
+                  duration: const Duration(seconds: 2));
             }
           },
         ),
@@ -305,211 +320,245 @@ Widget moreAboutSection = Container(
   ),
 );
 
-Widget iconPicture = SingleChildScrollView(
-  padding: EdgeInsets.all(5),
-  scrollDirection: Axis.horizontal,
-  // margin: EdgeInsets.fromLTRB(20, 20, 20, 10),
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Container(
-        margin: EdgeInsets.fromLTRB(10, 10, 10, 5),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(5),
-              width: 340,
-              height: 250,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.white,
-                    Colors.transparent,
-                    // Color(0xFF232D3B),
-                  ],
-                ),
-              ),
-              child: Container(
-                width: double.infinity,
-                //padding: EdgeInsets.all(25),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/Cyberpunk2077.jpg"),
-                    // colorFilter: null,
-                    fit: BoxFit.cover,
-                  ),
-                  // gradient: LinearGradient(
-                  //   begin: Alignment.topCenter,
-                  //   end: Alignment.bottomCenter,
-                  //   colors: [
-                  //     Color(0xFF232D3B),
-                  //     Colors.black,
-                  //   ],
-                  // ),
-                ),
+Widget iconPicture(List<String> games) {
+  print("The Game Length*****" + games.length.toString());
+  if (games.isEmpty) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 5),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(5),
+            width: 340,
+            height: 250,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.white,
+                  Colors.transparent,
+                  // Color(0xFF232D3B),
+                ],
               ),
             ),
+            child: Container(
+              width: double.infinity,
+              //padding: EdgeInsets.all(25),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                image: DecorationImage(
+                  image: AssetImage("assets/images/Cyberpunk2077.jpg"),
+                  // colorFilter: null,
+                  fit: BoxFit.cover,
+                ),
+                // gradient: LinearGradient(
+                //   begin: Alignment.topCenter,
+                //   end: Alignment.bottomCenter,
+                //   colors: [
+                //     Color(0xFF232D3B),
+                //     Colors.black,
+                //   ],
+                // ),
+              ),
+            ),
+          ),
 
-            // Text('New')
-          ],
-        ),
+          // Text('New')
+        ],
       ),
-      SizedBox(height: 10),
-      Container(
-        margin: EdgeInsets.fromLTRB(10, 20, 20, 10),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(10),
-              width: 340,
-              height: 250,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.white,
-                    Colors.transparent,
-                    // Color(0xFF232D3B),
-                  ],
-                ),
-              ),
-              child: Container(
-                width: double.infinity,
-                //padding: EdgeInsets.all(25),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/Spellbreak.jpg"),
-                    // colorFilter: null,
-                    fit: BoxFit.cover,
+    );
+  } else {
+    print("***************************************");
+    print("the first Game********************" + games[0].toString());
+    print("the first Game********************" + games[1].toString());
+    print("the first Game********************" + games[2].toString());
+    print("the first Game********************" + games[3].toString());
+    print("***************************************");
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(5),
+      scrollDirection: Axis.horizontal,
+      // margin: EdgeInsets.fromLTRB(20, 20, 20, 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            margin: EdgeInsets.fromLTRB(10, 10, 10, 5),
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(5),
+                  width: 340,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.white,
+                        Colors.transparent,
+                        // Color(0xFF232D3B),
+                      ],
+                    ),
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    //padding: EdgeInsets.all(25),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          //games[0],
+                          "https://res.cloudinary.com/cloudperso/image/upload/v1652091754/Games/h8ke8kkjc19wn35ibvvx.png",
+                        ),
+
+                        // colorFilter: null,
+                        fit: BoxFit.cover,
+                      ),
+                      // gradient: LinearGradient(
+                      //   begin: Alignment.topCenter,
+                      //   end: Alignment.bottomCenter,
+                      //   colors: [
+                      //     Color(0xFF232D3B),
+                      //     Colors.black,
+                      //   ],
+                      // ),
+                    ),
                   ),
                 ),
-              ),
+                // Text('New')
+              ],
             ),
-          ],
-        ),
-      ),
-      SizedBox(height: 10),
-      Container(
-        margin: EdgeInsets.fromLTRB(10, 20, 20, 10),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(10),
-              width: 340,
-              height: 250,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.white,
-                    Colors.transparent,
-                    // Color(0xFF232D3B),
-                  ],
-                ),
-              ),
-              child: Container(
-                width: double.infinity,
-                //padding: EdgeInsets.all(25),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  image: DecorationImage(
-                    image:
-                        AssetImage("assets/images/Horizon_Forbidden_West.jpg"),
-                    // colorFilter: null,
-                    fit: BoxFit.cover,
+          ),
+          SizedBox(height: 10),
+          Container(
+            margin: EdgeInsets.fromLTRB(10, 20, 20, 10),
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10),
+                  width: 340,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.white,
+                        Colors.transparent,
+                        // Color(0xFF232D3B),
+                      ],
+                    ),
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    //padding: EdgeInsets.all(25),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          //games[1],
+                          "https://res.cloudinary.com/cloudperso/image/upload/v1652091754/Games/mxmfezvwpemlxpudzq5d.png",
+                        ),
+                        // colorFilter: null,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
-      SizedBox(height: 10),
-      Container(
-        margin: EdgeInsets.fromLTRB(10, 20, 20, 10),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(10),
-              width: 340,
-              height: 250,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.white,
-                    Colors.transparent,
-                    // Color(0xFF232D3B),
-                  ],
-                ),
-              ),
-              child: Container(
-                width: double.infinity,
-                //padding: EdgeInsets.all(25),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/fifa-world.jpg"),
-                    // colorFilter: null,
-                    fit: BoxFit.cover,
+          ),
+          SizedBox(height: 10),
+          Container(
+            margin: EdgeInsets.fromLTRB(10, 20, 20, 10),
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10),
+                  width: 340,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.white,
+                        Colors.transparent,
+                        // Color(0xFF232D3B),
+                      ],
+                    ),
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    //padding: EdgeInsets.all(25),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          //games[3],
+                          "https://res.cloudinary.com/cloudperso/image/upload/v1652091753/Games/ps9y5qbndguzpzdbzzgx.png",
+                        ),
+                        // colorFilter: null,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
-      SizedBox(height: 30),
-      Container(
-        margin: EdgeInsets.fromLTRB(10, 20, 20, 10),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(10),
-              width: 340,
-              height: 250,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.white,
-                    Colors.transparent,
-                    // Color(0xFF232D3B),
-                  ],
-                ),
-              ),
-              child: Container(
-                width: double.infinity,
-                //padding: EdgeInsets.all(25),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/Dying_Light_2.jpg"),
-                    // colorFilter: null,
-                    fit: BoxFit.cover,
+          ),
+          SizedBox(height: 10),
+          Container(
+            margin: EdgeInsets.fromLTRB(10, 20, 20, 10),
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10),
+                  width: 340,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.white,
+                        Colors.transparent,
+                        // Color(0xFF232D3B),
+                      ],
+                    ),
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    //padding: EdgeInsets.all(25),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          // games[3],
+                          "https://res.cloudinary.com/cloudperso/image/upload/v1652091754/Games/wkt9ewphpnaemwswajx0.png",
+                        ),
+                        // colorFilter: null,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: 30),
+        ],
       ),
-    ],
-  ),
-);
+    );
+  }
+}
+
 Widget rowSection = Container(
   color: Colors.black,
   height: 100,

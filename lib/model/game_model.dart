@@ -8,15 +8,11 @@ class GameModels with ChangeNotifier {
   final String description;
   final int price;
   bool isFavorite = false;
+  final String link;
   static List<String> images = [];
 
   GameModels(
-    this.id,
-    this.image,
-    this.title,
-    this.description,
-    this.price,
-  );
+      this.id, this.image, this.title, this.description, this.price, this.link);
 
   void setImages(List<String> img) {
     if (images.isEmpty) {

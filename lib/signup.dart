@@ -2,6 +2,7 @@ import 'package:cloudify_application/model/http_exception.dart';
 import 'package:cloudify_application/providers/auth.dart';
 import 'package:cloudify_application/util/api.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'dart:convert';
 
@@ -203,6 +204,28 @@ class _SignUpState extends State<SignUp> {
                       )
                           .then((http.Response response) {
                         if (response.statusCode == 200) {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Information"),
+                                  content: Row(
+                                    children: [
+                                      Text("CheQ your EMail"),
+                                      Spacer(),
+                                      IconButton(
+                                          onPressed: () {
+                                            _launchURL();
+                                          },
+                                          icon: Icon(
+                                            Icons.email,
+                                            color: Colors.green,
+                                          ))
+                                    ],
+                                  ),
+                                );
+                              });
+
                           Navigator.pushNamed(context, "/signin");
                         } else if (response.statusCode == 402) {
                           showDialog(
@@ -303,5 +326,10 @@ class _SignUpState extends State<SignUp> {
         ],
       ),
     );
+  }
+
+  void _launchURL() async {
+    const _url = api_key;
+    if (!await launch(_url)) throw 'Could not launch $_url';
   }
 }

@@ -1,4 +1,3 @@
-import 'package:cloudify_application/signin.dart';
 import 'package:cloudify_application/widgets/drawer/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,7 +14,7 @@ IconData _iconLight = Icons.wb_sunny;
 IconData _iconDark = Icons.nights_stay;
 
 ThemeData _lightTheme = ThemeData(
-  primarySwatch: Colors.amber,
+  primarySwatch: Colors.yellow,
   brightness: Brightness.light,
 );
 ThemeData _darkTheme = ThemeData(
@@ -33,7 +32,7 @@ class _SettingState extends State<Setting> {
         // leadingWidth: 0,
         title: Align(
             child: Text(
-              'Shop Page ',
+              'Setting ',
               // textAlign: Alignment.bottomLeft,
               style: TextStyle(
                 color: Colors.white,
@@ -48,19 +47,8 @@ class _SettingState extends State<Setting> {
         theme: _iconBool ? _darkTheme : _lightTheme,
         home: Scaffold(
           appBar: AppBar(
+            //backgroundColor: const Color(0xFF232D3B),
             title: Text("settings".tr),
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SignIn()),
-                );
-              },
-            ),
             actions: [
               IconButton(
                 onPressed: () {
@@ -74,6 +62,76 @@ class _SettingState extends State<Setting> {
           ),
           body: Row(
             children: [
+              GestureDetector(
+                onTap: () {
+                  // showDialog(
+                  //     context: context,
+                  //     builder: (BuildContext context) {
+                  //       return AlertDialog(
+                  //         title: Text("Setting"),
+                  //         content: Column(
+                  //           mainAxisSize: MainAxisSize.min,
+                  //           children: [
+                  //             Container(
+                  //                 child: IconButton(
+                  //               icon: Image.asset('assets/icons/tn.jpeg'),
+                  //               iconSize: 50,
+                  //               onPressed: () {
+                  //                 var locale = Locale('ru', 'RU');
+                  //                 Get.updateLocale(locale);
+                  //               },
+                  //             )),
+                  //             Container(
+                  //                 child: IconButton(
+                  //               icon: Image.asset('assets/icons/fr.webp'),
+                  //               iconSize: 50,
+                  //               onPressed: () {
+                  //                 var locale = Locale('es', 'ES');
+                  //                 Get.updateLocale(locale);
+                  //               },
+                  //             )),
+                  //             Container(
+                  //                 child: IconButton(
+                  //               icon: Image.asset('assets/icons/usa.webp'),
+                  //               iconSize: 50,
+                  //               onPressed: () {
+                  //                 var locale = Locale('en', 'US');
+                  //                 Get.updateLocale(locale);
+                  //               },
+                  //             )),
+                  //           ],
+                  //         ),
+                  //         actions: [
+                  //           FlatButton(
+                  //               onPressed: () {
+                  //                 Navigator.of(context).pop();
+                  //               },
+                  //               child: Text("Close")),
+                  //         ],
+                  //       );
+                  //     });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Language",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               Container(
                   child: IconButton(
                 icon: Image.asset('assets/icons/tn.jpeg'),

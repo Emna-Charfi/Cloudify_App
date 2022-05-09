@@ -5,7 +5,7 @@ import 'package:cloudify_application/providers/games.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PanierGameCard extends StatelessWidget {
+class PanierGameCard extends StatefulWidget {
   final String? id;
   final String? productId;
   final String? title;
@@ -22,13 +22,18 @@ class PanierGameCard extends StatelessWidget {
       this.onCardClick});
 
   @override
+  State<PanierGameCard> createState() => _PanierGameCardState();
+}
+
+class _PanierGameCardState extends State<PanierGameCard> {
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        this.onCardClick!();
+        this.widget.onCardClick!();
       },
       child: Dismissible(
-        key: ValueKey(id),
+        key: ValueKey(widget.id),
         background: Container(
           color: Theme.of(context).errorColor,
           child: Icon(
@@ -46,8 +51,8 @@ class PanierGameCard extends StatelessWidget {
         direction: DismissDirection.endToStart,
         confirmDismiss: (direction) {
           return showDialog(
-              context: context,
-              builder: (ctx) => AlertDialog(
+              context: this.context,
+              builder: (context) => AlertDialog(
                     title: Text("Are you sure?"),
                     content:
                         Text("Do you want to remove the item from the Panier?"),
@@ -55,18 +60,19 @@ class PanierGameCard extends StatelessWidget {
                       FlatButton(
                         onPressed: () {
                           Navigator.of(context).pop(false);
-                          //Navigator.of(context).pop();
                         },
                         child: Text("No"),
                       ),
                       FlatButton(
                         onPressed: () {
                           Navigator.of(context).pop(true);
-                          Provider.of<Cart>(context, listen: false)
-                              .removeItem(productId!);
-                          Provider.of<Games>(context, listen: false)
-                              .toggleFavoriteStatus(productId!);
-                          Navigator.pushNamed(context, "/home/panier");
+
+                          Provider.of<Cart>(this.context, listen: false)
+                              .removeItem(widget.productId!);
+                          Provider.of<Games>(this.context, listen: false)
+                              .toggleFavoriteStatus(widget.productId!);
+
+                          // Navigator.pushNamed(context, "/home/panier");
                         },
                         child: Text("Yes"),
                       ),
@@ -88,19 +94,19 @@ class PanierGameCard extends StatelessWidget {
               padding: EdgeInsets.all(8),
               child: ListTile(
                 leading: ClipOval(
-                    child: Image.asset(
-                  image!,
+                    child: Image.network(
+                  widget.image!,
                   fit: BoxFit.contain,
                   matchTextDirection: true,
                   height: 100,
                   width: 100,
                 )),
                 title: Text(
-                  title.toString(),
+                  widget.title.toString(),
                   style: TextStyle(fontSize: 20),
                 ),
                 subtitle: Text(
-                  'Total: \$${(price)}',
+                  'Total: \$${(widget.price)}',
                   style: TextStyle(fontSize: 15),
                 ),
                 trailing: Icon(Icons.delete),

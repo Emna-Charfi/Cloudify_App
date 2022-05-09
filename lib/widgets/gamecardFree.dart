@@ -1,4 +1,5 @@
 import 'package:cloudify_application/model/game_model.dart';
+import 'package:cloudify_application/widgets/web_view.dart';
 
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -31,7 +32,7 @@ class FreeGameCard extends StatelessWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.white,
-                      Colors.transparent,
+                      //Colors.transparent,
                       Colors.white,
 
                       Colors.orangeAccent.shade100,
@@ -39,7 +40,7 @@ class FreeGameCard extends StatelessWidget {
 
                       Colors.white,
                       Colors.orangeAccent.shade100,
-                      Colors.transparent,
+                      //Colors.transparent,
                       // Color(0xFF232D3B),
                     ],
                   ),
@@ -101,9 +102,16 @@ class FreeGameCard extends StatelessWidget {
                               SizedBox(width: 10),
                               IconButton(
                                 onPressed: () {
+                                  print(
+                                      "Le port of web view" + this.game!.link);
                                   // PLAY NOW
                                   //_launchURL();
-                                  Navigator.pushNamed(context, "/webview");
+                                  //Navigator.pushNamed(context, "/webview");
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              WebViewD(link: this.game!.link)));
                                 },
                                 icon: Icon(
                                   Icons.play_circle_fill,

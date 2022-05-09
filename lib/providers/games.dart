@@ -23,7 +23,7 @@ class Games with ChangeNotifier {
 
   bool findByIdFav(String id) {
     GameModels game = _items.firstWhere((prod) => prod.id == id);
-
+    notifyListeners();
     return game.isFavorite;
   }
 

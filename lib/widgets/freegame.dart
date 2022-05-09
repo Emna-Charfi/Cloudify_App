@@ -12,30 +12,35 @@ class FreeGame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<GameModels> games = GameUtilsFree.getMockedGames();
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Padding(
-        padding: const EdgeInsets.only(top: 10, bottom: 10),
-        child: Text('Your Free Game:',
-            textAlign: TextAlign.center, style: TextStyle(color: Colors.black)),
-      ),
-      Expanded(
-        child: ListView.builder(
-          itemCount: games.length,
-          itemBuilder: (BuildContext ctx, int index) {
-            return FreeGameCard(
-                game: games[index],
-                onCardClick: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              selectedGamePanier(index: index)));
 
-                  //Play Now
-                });
-          },
+    return Scaffold(
+      backgroundColor: const Color(0xFF232D3B),
+      body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
+          child: Text('Your Free Game:',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.orange)),
         ),
-      )
-    ]);
+        Expanded(
+          child: ListView.builder(
+            itemCount: games.length,
+            itemBuilder: (BuildContext ctx, int index) {
+              return FreeGameCard(
+                  game: games[index],
+                  onCardClick: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                selectedGamePanier(index: index)));
+
+                    //Play Now
+                  });
+            },
+          ),
+        )
+      ]),
+    );
   }
 }

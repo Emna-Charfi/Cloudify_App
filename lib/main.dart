@@ -23,6 +23,7 @@ import 'package:cloudify_application/signin.dart';
 import 'package:cloudify_application/signup.dart';
 import 'package:cloudify_application/splash_screen.dart';
 import 'package:cloudify_application/store.dart';
+import 'package:cloudify_application/test/sett.dart';
 import 'package:cloudify_application/widgets/drower_screen.dart';
 import 'package:cloudify_application/widgets/freegame.dart';
 import 'package:cloudify_application/widgets/paidgames.dart';
@@ -153,6 +154,9 @@ class MyApp extends StatelessWidget {
           },
           "/webview": (BuildContext context) {
             return WebViewD();
+          },
+          "/set": (BuildContext context) {
+            return SettingsPage();
           },
         },
         // home: const MyHomePage(title: 'Flutter Demo Home Page'),

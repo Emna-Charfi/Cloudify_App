@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:cloudify_application/const/colors.dart';
+import 'package:cloudify_application/pages/ProfilePage.dart';
 import 'package:cloudify_application/providers/cart.dart';
 import 'package:cloudify_application/services/payement.dart';
 import 'package:cloudify_application/util/api.dart';
+import 'package:cloudify_application/util/helper.dart';
 
 import 'package:cloudify_application/widgets/badge.dart';
 
@@ -10,17 +15,41 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/orders.dart' show Orders;
 import "package:http/http.dart" as http;
 
-class OrdersScreen extends StatelessWidget {
+String _amount = "";
+String _id = "";
+
+class OrdersScreen extends StatefulWidget {
+  @override
+  State<OrdersScreen> createState() => _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State<OrdersScreen> {
   final PaymentController controller = Get.put(PaymentController());
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCounter();
+  }
+
+  _loadCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _amount = (prefs.getString('AMOUNT') ?? '');
+      _id = (prefs.getString('ID') ?? '');
+      print("iddddddddd*************" + _id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final gamePanier = Provider.of<Cart>(context, listen: false);
-    final orderData = Provider.of<Orders>(context, listen: false);
+    final orderData = Provider.of<Orders>(context, listen: true);
 
     double price = 0.0;
     for (int i = 0; i < orderData.orders.length; i++) {
@@ -73,8 +102,234 @@ class OrdersScreen extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () async {
               int num = price.toInt();
-              controller.makePayment(amount: num.toString(), currency: 'USD');
-              gamePanier.clear();
+              print("********the price******" + price.toString());
+              print("********the price******" + _amount.toString());
+              if (int.parse(_amount) < num) {
+                //print("*********" + accpt.toString());
+
+                showDialog(
+                    context: this.context,
+                    builder: (context) => AlertDialog(
+                          title: Text(
+                            "Your Amount not enough",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.deepOrangeAccent,
+                              fontSize: 22.0,
+                            ),
+                          ),
+                          content:
+                              Text("You have to charge your Wallet or Buy Now"),
+                          actions: <Widget>[
+                            FlatButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop(false);
+                                if (await controller.makePayment(
+                                        amount: num.toString(),
+                                        currency: 'USD') ==
+                                    true) {
+                                  if (AddBase(this.context)) {
+                                    gamePanier.clear();
+
+                                    orderData.clear();
+
+                                    showModalBottomSheet(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        isScrollControlled: true,
+                                        isDismissible: false,
+                                        context: this.context,
+                                        builder: (context) {
+                                          return Container(
+                                            height: Helper.getScreenHeight(
+                                                    context) *
+                                                0.8,
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    IconButton(
+                                                      onPressed: () {
+                                                        Navigator.of(
+                                                                this.context)
+                                                            .pop();
+                                                      },
+                                                      icon: Icon(Icons.clear),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Image.asset(
+                                                  Helper.getAssetName(
+                                                    "vector4.png",
+                                                    "virtual",
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                                Text(
+                                                  "Thank You!",
+                                                  style: TextStyle(
+                                                    color: AppColor.primary,
+                                                    fontWeight: FontWeight.w900,
+                                                    fontSize: 30,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  "for your order",
+                                                  style:
+                                                      Helper.getTheme(context)
+                                                          .headline4!
+                                                          .copyWith(
+                                                              color: AppColor
+                                                                  .primary),
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 20.0),
+                                                  child: Text(
+                                                      "Your order is now being processed. We will let you know once the order is picked from the outlet. Check the status of your order"),
+                                                ),
+                                                SizedBox(
+                                                  height: 60,
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                    horizontal: 20,
+                                                  ),
+                                                  child: SizedBox(
+                                                    height: 50,
+                                                    width: double.infinity,
+                                                    child: ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pushNamed("/home");
+                                                      },
+                                                      child:
+                                                          Text("Back To Home"),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        });
+                                  }
+                                }
+                              },
+                              child: Text("Buy Now"),
+                            ),
+                            FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(false);
+                                Navigator.pushNamed(
+                                    this.context, "/home/profil");
+                              },
+                              child: Text("Charge my Wallet"),
+                            ),
+                          ],
+                        ));
+              } else {
+                if (AddBase(this.context)) {
+                  gamePanier.clear();
+
+                  orderData.clear();
+                  showModalBottomSheet(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      isScrollControlled: true,
+                      isDismissible: false,
+                      context: context,
+                      builder: (context) {
+                        return Container(
+                          height: Helper.getScreenHeight(context) * 0.8,
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    icon: Icon(Icons.clear),
+                                  ),
+                                ],
+                              ),
+                              Image.asset(
+                                Helper.getAssetName(
+                                  "vector4.png",
+                                  "virtual",
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                "Thank You!",
+                                style: TextStyle(
+                                  color: AppColor.primary,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 30,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "for your order",
+                                style: Helper.getTheme(context)
+                                    .headline4!
+                                    .copyWith(color: AppColor.primary),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0),
+                                child: Text(
+                                    "Your order is now being processed. We will let you know once the order is picked from the outlet. Check the status of your order"),
+                              ),
+                              SizedBox(
+                                height: 60,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                ),
+                                child: SizedBox(
+                                  height: 50,
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pushNamed("/home");
+                                    },
+                                    child: Text("Back To Home"),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      });
+                }
+              }
+
+              //cart.clear();
 
               //AddBase(context);
               //Navigator.push(
@@ -93,7 +348,7 @@ class OrdersScreen extends StatelessWidget {
     );
   }
 
-  void AddBase(BuildContext context) {
+  bool AddBase(BuildContext context) {
     final gamePanier = Provider.of<Cart>(context, listen: false);
     Map<String, String> headers = {
       "Content-Type": "application/json; charset=UTF-8"
@@ -101,71 +356,68 @@ class OrdersScreen extends StatelessWidget {
     print("lenth of card" + gamePanier.itemCount.toString());
 
     // for (var i = 0; i < gamePanier.itemCount; i++) {
-    gamePanier.items.forEach((key, cartItem) {
-      print("Id Of Game    " + gamePanier.idOfGame[cartItem].toString());
-      http
-          .post(
-        Uri.http(api_keyM, "buyGame/62352c1ae2c7cce027bad381"),
-        headers: headers,
-      )
-          .then((http.Response response) async {
-        if (response.statusCode == 200) {
-          //Map<String, dynamic> userData = jsonDecode(response.body);
+    // gamePanier.items.forEach((key, cartItem) {
+    // for (var i = 0; i < gamePanier.items.length; i++) {
+    // print("Id Of Game    " + gamePanier.items[i].toString());
+    http
+        .post(
+      Uri.http(api_keyM, "buyGame/" + _id + "/" + "6278eb6a0ccfaf87a55a1864"),
+      headers: headers,
+    )
+        .then((http.Response response) async {
+      if (response.statusCode == 200) {
+        Map<String, dynamic> userData = jsonDecode(response.body);
 
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text("Information"),
-                  content: Row(
-                    children: [
-                      Text("Added"),
-                    ],
-                  ),
-                );
-              });
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString("AMOUNT", userData['solde'].toString());
+        return true;
 
-          //Navigator.pushReplacementNamed(context, "/home");
-          // print("success");
-        } else if (response.statusCode == 401) {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return const AlertDialog(
-                  title: Text("Information"),
-                  content: Text("Password is incorrect"),
-                );
-              });
-        } else if (response.statusCode == 402) {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return const AlertDialog(
-                  title: Text("Information"),
-                  content: Text("Email doesn't exist"),
-                );
-              });
-        } else if (response.statusCode == 400) {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return const AlertDialog(
-                  title: Text("Information"),
-                  content: Text("Bad Request 400 "),
-                );
-              });
-        } else {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return const AlertDialog(
-                  title: Text("Information"),
-                  content:
-                      Text("Une erreur s'est produite. Veuillez réessayer !"),
-                );
-              });
-        }
-      });
+        //Navigator.pushReplacementNamed(context, "/home");
+        // print("success");
+      } else if (response.statusCode == 401) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const AlertDialog(
+                title: Text("Information"),
+                content: Text("Password is incorrect"),
+              );
+            });
+        return false;
+      } else if (response.statusCode == 402) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const AlertDialog(
+                title: Text("Information"),
+                content: Text("Email doesn't exist"),
+              );
+            });
+        return false;
+      } else if (response.statusCode == 400) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const AlertDialog(
+                title: Text("Information"),
+                content: Text("Bad Request 400 "),
+              );
+            });
+        return false;
+      } else {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const AlertDialog(
+                title: Text("Information"),
+                content:
+                    Text("Une erreur s'est produite. Veuillez réessayer !"),
+              );
+            });
+        return false;
+      }
     });
+    //}
+    return true;
   }
 }

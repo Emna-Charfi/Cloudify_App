@@ -11,31 +11,35 @@ class PaidGame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<GameModels> games = GameUtilsPaid.getMockedGames();
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Padding(
-        padding: const EdgeInsets.only(top: 10, bottom: 10),
-        child: Text('Our New Game:',
-            textAlign: TextAlign.center, style: TextStyle(color: Colors.black)),
-      ),
-      Expanded(
-        child: ListView.builder(
-          itemCount: games.length,
-          itemBuilder: (BuildContext ctx, int index) {
-            return GameCard(
-                game: games[index],
-                onCardClick: () {
-                  // catSelection.selectedCategory = categories[index];
-                  // Utils.mainAppNav.currentState!
-                  //     .pushNamed('/selectedcategorypage');
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              selectedGamepage(index: games[index])));
-                });
-          },
+    return Scaffold(
+      backgroundColor: const Color(0xFF232D3B),
+      body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
+          child: Text('Our New Game:',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.orange)),
         ),
-      )
-    ]);
+        Expanded(
+          child: ListView.builder(
+            itemCount: games.length,
+            itemBuilder: (BuildContext ctx, int index) {
+              return GameCard(
+                  game: games[index],
+                  onCardClick: () {
+                    // catSelection.selectedCategory = categories[index];
+                    // Utils.mainAppNav.currentState!
+                    //     .pushNamed('/selectedcategorypage');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                selectedGamepage(index: games[index])));
+                  });
+            },
+          ),
+        )
+      ]),
+    );
   }
 }

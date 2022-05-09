@@ -28,15 +28,16 @@ class GameUtilsPaid {
       for (var i = 0; i < gamesFromServer.length; i++) {
         loadedProducts.add(GameModels(
           gamesFromServer[i]['_id'],
-          //gamesFromServer[i]['images']['url'],
+          gamesFromServer[i]['images'][0]['url'],
 
-          "assets/images/Cyberpunk2077.jpg",
+          // "assets/images/Cyberpunk2077.jpg",
           gamesFromServer[i]["name"],
           gamesFromServer[i]['description'],
           gamesFromServer[i]['price'],
+          gamesFromServer[i]['link'],
           //123.44,
         ));
-        print("list of game*****" + gamesFromServer[i]['images'].toString());
+        print("list of game*****" + gamesFromServer[i]['_id'].toString());
         // gamesFromServer[i]['images'].forEach((prodId, prodData) {
         //   GameModels.images.add(prodData[i]['url']);
         // });
@@ -44,6 +45,18 @@ class GameUtilsPaid {
       ;
       _games = loadedProducts;
       //} else {}
+      final List<String> listImg = [];
+      for (var i = 0; i < _games.length; i++) {
+        for (var j = 0; j < gamesFromServer.length; j++) {
+          for (var k = 0; k < gamesFromServer[j]['images'].length; k++) {
+            listImg.add(gamesFromServer[i]['images'][k]['url'].toString());
+            print("Game" +
+                k.toString() +
+                gamesFromServer[i]['images'][k]['url'].toString());
+          }
+        }
+        _games[i].setImages(listImg);
+      }
 
       //notifyListeners();
     } else if (response.statusCode == 402) {

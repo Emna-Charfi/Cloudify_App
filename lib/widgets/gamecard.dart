@@ -22,7 +22,7 @@ class GameCard extends StatelessWidget {
               Positioned.fill(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.asset(this.game!.image, fit: BoxFit.cover),
+                  child: Image.network(this.game!.image, fit: BoxFit.cover),
                   //child: Image.network(this.game!.image, fit: BoxFit.cover),
                 ),
               ),
@@ -40,7 +40,7 @@ class GameCard extends StatelessWidget {
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
                             colors: [
-                              Colors.black.withOpacity(0.7),
+                              Colors.orange.withOpacity(0.7),
                               Colors.transparent
                             ]))),
               ),

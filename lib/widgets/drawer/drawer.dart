@@ -1,3 +1,4 @@
+import 'package:cloudify_application/test/sett.dart';
 import 'package:flutter/material.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 
@@ -196,14 +197,14 @@ class _DrawerSState extends State<DrawerS> {
                           ),
                           ListTile(
                             onTap: () {
-                              Navigator.pushNamed(context, "/order");
+                              Navigator.pushNamed(context, "/home/profil");
                             },
                             leading: Icon(
-                              Icons.help,
+                              Icons.wallet_giftcard,
                               color: Colors.white,
                             ),
                             title: Text(
-                              "Help",
+                              "Wallet",
                               style: TextStyle(color: Colors.white),
                             ),
                           ),

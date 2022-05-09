@@ -83,6 +83,8 @@ class _SignInState extends State<SignIn> {
           prefs.setString("EMAIL", userData['user']['email'].toString());
           prefs.setString("TOKEN", userData['token'].toString());
           prefs.setString("AVATAR", userData['user']['avatar'].toString());
+          prefs.setString("AMOUNT", userData['user']['solde'].toString());
+
           //    userData["username"].toString());
           print("username of userData");
           print(userData);
@@ -90,6 +92,7 @@ class _SignInState extends State<SignIn> {
           print(userData['user']['email'].toString());
 
           print("****AVATAR******" + userData['user']['avatar'].toString());
+          print("****Mount******" + userData['user']['solde'].toString());
 
           print("id in lognin" + userData['user']['_id'].toString());
 

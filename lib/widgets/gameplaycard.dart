@@ -2,7 +2,6 @@ import 'package:cloudify_application/model/game_model.dart';
 import 'package:cloudify_application/widgets/web_view.dart';
 
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class GamePlayCard extends StatelessWidget {
   GameModels? game;
@@ -24,7 +23,7 @@ class GamePlayCard extends StatelessWidget {
           Container(
             padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
             width: double.infinity,
-            height: 400,
+            height: 300,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               gradient: LinearGradient(
@@ -32,7 +31,11 @@ class GamePlayCard extends StatelessWidget {
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.white,
-                  Colors.transparent,
+                  //  Colors.transparent,
+                  Color.fromARGB(255, 132, 89, 26),
+
+                  Colors.transparent.withGreen(7),
+                  // Colors.white,
                   // Color(0xFF232D3B),
                 ],
               ),
@@ -45,7 +48,8 @@ class GamePlayCard extends StatelessWidget {
                     Positioned.fill(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.asset(this.game!.image, fit: BoxFit.cover),
+                        child:
+                            Image.network(this.game!.image, fit: BoxFit.cover),
                       ),
                     ),
                     Positioned(
@@ -86,13 +90,19 @@ class GamePlayCard extends StatelessWidget {
                               child: Icon(
                                 Icons.play_arrow_sharp,
                                 color: Colors.green,
-                                size: 50,
+                                size: 60,
                               ),
                               onTap: () async {
+                                print("Le port of web view" + this.game!.link);
                                 //WebView();
                                 //PLAY NOW
                                 //_launchURL();
-                                Navigator.pushNamed(context, "/webview");
+                                //Navigator.pushNamed(context, "/webview");
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            WebViewD(link: this.game!.link)));
                               },
                             ),
                           ],
@@ -105,10 +115,5 @@ class GamePlayCard extends StatelessWidget {
         ],
       )),
     );
-  }
-
-  void _launchURL() async {
-    const _url = 'https://flutter.io';
-    if (!await launch(_url)) throw 'Could not launch $_url';
   }
 }
